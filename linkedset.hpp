@@ -18,10 +18,9 @@ class LinkedSet : public AbstractSet<T>
 {
 private:
     LinkedSetNode<T>* _first;
-    LinkedSetNode<T>* _last;
 
 public:
-    LinkedSet() : _first(NULL), _last(NULL) {};
+    LinkedSet() : _first(NULL) {};
     virtual ~LinkedSet()
     {
         LinkedSetNode<T>* temp;
@@ -35,14 +34,14 @@ public:
     void add(const T& value)
     {
         LinkedSetNode<T>* node = new LinkedSetNode<T>(value);
-        if (_last == NULL)
+        if (_first == NULL)
         {
-            _first = _last = node;
+            _first = node;
         }
         else
         {
-            _last->next = node;
-            _last = node;
+            node->next = _first;
+            _first = node;
         }
     }
     void remove(const T& value)
@@ -64,11 +63,6 @@ public:
             else
             {
                 _first = cur->next;
-            }
-            
-            if (cur->next == NULL)
-            {
-                _last = cur;
             }
         }
     }
