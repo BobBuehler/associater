@@ -4,27 +4,27 @@
 #include "abstractset.h"
 
 template < typename T >
-class Node
+class LinkedSetNode
 {
 public:
     const T value;
-    Node<T>* next;
+    LinkedSetNode<T>* next;
     
-    Node(const T& v) : value(v), next(NULL) {};
+    LinkedSetNode(const T& v) : value(v), next(NULL) {};
 };
 
 template < typename T >
 class LinkedSet : public AbstractSet<T>
 {
 private:
-    Node<T>* _first;
-    Node<T>* _last;
+    LinkedSetNode<T>* _first;
+    LinkedSetNode<T>* _last;
 
 public:
     LinkedSet() : _first(NULL), _last(NULL) {};
     virtual ~LinkedSet()
     {
-        Node<T>* temp;
+        LinkedSetNode<T>* temp;
         while (_first != NULL)
         {
             temp = _first->next;
@@ -34,7 +34,7 @@ public:
     }
     void add(const T& value)
     {
-        Node<T>* node = new Node<T>(value);
+        LinkedSetNode<T>* node = new LinkedSetNode<T>(value);
         if (_last == NULL)
         {
             _first = _last = node;
@@ -47,8 +47,8 @@ public:
     }
     void remove(const T& value)
     {
-        Node<T>* prev = NULL;
-        Node<T>* cur = _first;
+        LinkedSetNode<T>* prev = NULL;
+        LinkedSetNode<T>* cur = _first;
         while (cur != NULL && cur->value != value)
         {
             prev = cur;
@@ -74,7 +74,7 @@ public:
     }
     bool contains(const T& value) const
     {
-        Node<T>* cur = _first;
+        LinkedSetNode<T>* cur = _first;
         while (cur != NULL && cur->value != value)
         {
             cur = cur->next;
