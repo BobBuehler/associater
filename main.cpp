@@ -3,6 +3,7 @@
 
 #include "abstractmap.h"
 #include "abstractset.h"
+#include "hashmap.hpp"
 #include "listmap.hpp"
 #include "listset.hpp"
 #include "test.h"
@@ -15,27 +16,54 @@ void testSet(AbstractSet<T>& set, const T& sample1, const T& sample2);
 template <typename K, typename V>
 void testMap(AbstractMap<K, V>& map, const K& key1, const K& key2, const V& value1, const V& value2);
 
+class IntHasher : public Hasher<int>
+{
+public:
+    int operator()(const int& key)
+    {
+        return key;
+    }
+};
+
+class StringHasher : public Hasher<string>
+{
+public:
+    int operator()(const string& key)
+    {
+        return 0;
+    }
+};
+
 int main()
 {
+    string str1 = "hello";
+    string str2 = "world";
+    IntHasher intHasher;
+    StringHasher stringHasher;
+    
     test::section("ListSet<int>");
     ListSet<int> intSet;
     testSet(intSet, 1, 5);
     
     test::section("ListSet<string>");
     ListSet<string> stringSet;
-    string stringSample1 = "hello";
-    string stringSample2 = "world";
-    testSet(stringSet, stringSample1, stringSample2);
+    testSet(stringSet, str1, str2);
     
     test::section("ListMap<int, int>");
-    ListMap<int, int> intMap;
-    testMap(intMap, 1, 2, 3, 4);
+    ListMap<int, int> intListMap;
+    testMap(intListMap, 1, 2, 3, 4);
+    
+    test::section("HashMap<int, int>");
+    HashMap<int, int> intHashMap(&intHasher);
+    testMap(intHashMap, 1, 2, 3, 4);
     
     test::section("ListMap<string, float>");
-    ListMap<string, float> strFloatMap;
-    string key1 = "hello";
-    string key2 = "world";
-    testMap(strFloatMap, key1, key2, 1.0f, 2.0f);
+    ListMap<string, float> strFloatListMap;
+    testMap(strFloatListMap, str1, str2, 1.0f, 2.0f);
+    
+    test::section("HashMap<string, float>");
+    HashMap<string, float> strFloatHashMap(&stringHasher);
+    testMap(strFloatHashMap, str1, str2, 1.0f, 2.0f);
     
     return 0;
 }
