@@ -2,7 +2,7 @@
 #include <string>
 
 #include "abstractset.h"
-#include "linkedset.hpp"
+#include "listset.hpp"
 #include "test.h"
 
 using namespace std;
@@ -12,12 +12,12 @@ void testSet(AbstractSet<T>& set, const T& sample1, const T& sample2);
 
 int main()
 {
-    test::section("LinkedSet<int>");
-    LinkedSet<int> intSet;
+    test::section("ListSet<int>");
+    ListSet<int> intSet;
     testSet(intSet, 1, 5);
     
-    test::section("LinkedSet<string>");
-    LinkedSet<string> stringSet;
+    test::section("ListSet<string>");
+    ListSet<string> stringSet;
     string stringSample1 = "hello";
     string stringSample2 = "world";
     testSet(stringSet, stringSample1, stringSample2);
