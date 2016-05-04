@@ -34,7 +34,11 @@ class StringHasher : public Hasher<string>
 public:
     int operator()(const string& key)
     {
-        return 0;
+        int hash = 0;
+        for (int i = 0; i < key.length(); ++i)
+        {
+            hash += key[i] << (8 * (i % 4));
+        }
     }
 };
 
