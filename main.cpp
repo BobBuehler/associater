@@ -1,4 +1,3 @@
-#include <iostream>
 #include <string>
 
 #include "abstractmap.h"
@@ -8,7 +7,11 @@
 #include "listset.hpp"
 #include "test.h"
 
-using namespace std;
+template <typename T>
+void testIterable(AbstractIterable<T>& iterable);
+
+template <typename T>
+void testIterable(AbstractIterable<T>& iterable, const T& item1, const T& item2);
 
 template <typename T>
 void testSet(AbstractSet<T>& set, const T& sample1, const T& sample2);
@@ -69,8 +72,33 @@ int main()
 }
 
 template <typename T>
+void testIterable(AbstractIterable<T>& iterable)
+{
+    AbstractIterator<T>* iterator = iterable.createIterator();
+    test::result(iterator != NULL, "iteratble creates a non-NULL interator");
+    test::result(iterator->moveNext() == false, "empty iterator can't moveNext");
+    delete iterator;
+}
+
+template <typename T>
+void testIterable(AbstractIterable<T>& iterable, const T& item1, const T& item2)
+{
+    AbstractIterator<T>* iterator = iterable.createIterator();
+    test::result(iterator != NULL, "iteratble creates a non-NULL interator");
+    test::result(iterator->moveNext() == true, "iterator can moveNext");
+    const T& val1 = iterator->getValue();
+    test::result(iterator->moveNext() == true, "iterator can moveNext again");
+    const T& val2 = iterator->getValue();
+    test::result(iterator->moveNext() == false, "iterator can't moveNext again");
+    bool goodVals = (val1 == item1 && val2 == item2) || (val1 == item2 && val2 == item1);
+    test::result(goodVals, "iterator returned the two items");
+    delete iterator;
+}
+
+template <typename T>
 void testSet(AbstractSet<T>& set, const T& sample1, const T& sample2)
 {
+    testIterable(set);
     test::result(set.contains(sample1) == false, "set shouldn't contain sample1");
     test::result(set.contains(sample2) == false, "set shouldn't contain sample2");
     
@@ -79,9 +107,17 @@ void testSet(AbstractSet<T>& set, const T& sample1, const T& sample2)
     test::result(set.contains(sample2) == false, "set shouldn't contain sample2");
     
     set.add(sample2);
+    testIterable(set, sample1, sample2);
+    test::result(set.contains(sample1) == true, "set should contain sample1");
+    test::result(set.contains(sample2) == true, "set should contain sample2");
+    
     set.remove(sample1);
     test::result(set.contains(sample1) == false, "set shouldn't contain sample1");
     test::result(set.contains(sample2) == true, "set should contain sample2");
+    
+    set.remove(sample2);
+    test::result(set.contains(sample1) == false, "set shouldn't contain sample1");
+    test::result(set.contains(sample2) == false, "set shouldn't contain sample2");
 }
 
 template <typename K, typename V>

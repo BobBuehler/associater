@@ -3,15 +3,8 @@
 
 #include "abstractset.h"
 
-template < typename T >
-class ListSetNode
-{
-public:
-    const T value;
-    ListSetNode<T>* next;
-    
-    ListSetNode(const T& v) : value(v), next(NULL) {};
-};
+template < typename T > class ListSetNode;
+template < typename T > class ListSetIterator;
 
 template < typename T >
 class ListSet : public AbstractSet<T>
@@ -20,7 +13,7 @@ private:
     ListSetNode<T>* _first;
 
 public:
-    ListSet() : _first(NULL) {};
+    ListSet() : _first(NULL) {}
 
     virtual ~ListSet()
     {
@@ -78,6 +71,50 @@ public:
             cur = cur->next;
         }
         return cur != NULL && cur->value == value;
+    }
+    
+    AbstractIterator<T>* createIterator() const
+    {
+        return new ListSetIterator<T>(_first);
+    }
+};
+
+template < typename T > class ListSetNode
+{
+public:
+    const T value;
+    ListSetNode<T>* next;
+    
+    ListSetNode(const T& v) : value(v), next(NULL) {}
+};
+
+template < typename T >
+class ListSetIterator : public AbstractIterator<T>
+{
+private:
+    bool _started;
+    ListSetNode<T>* _value;
+
+public:
+    ListSetIterator(ListSetNode<T>* value) : _started(false), _value(value) {}
+    
+    bool moveNext()
+    {
+        if (!_started)
+        {
+            _started = true;
+        }
+        else
+        {
+            _value = _value->next;
+        }
+        
+        return _value != NULL;
+    }
+    
+    const T& getValue() const
+    {
+        return _value->value;
     }
 };
 
