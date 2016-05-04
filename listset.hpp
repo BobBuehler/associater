@@ -93,10 +93,10 @@ class ListSetIterator : public AbstractIterator<T>
 {
 private:
     bool _started;
-    ListSetNode<T>* _value;
+    ListSetNode<T>* _node;
 
 public:
-    ListSetIterator(ListSetNode<T>* value) : _started(false), _value(value) {}
+    ListSetIterator(ListSetNode<T>* node) : _started(false), _node(node) {}
     
     bool moveNext()
     {
@@ -106,15 +106,15 @@ public:
         }
         else
         {
-            _value = _value->next;
+            _node = _node->next;
         }
         
-        return _value != NULL;
+        return _node != NULL;
     }
     
     const T& getValue() const
     {
-        return _value->value;
+        return _node->value;
     }
 };
 
