@@ -56,13 +56,13 @@ int main()
     ListMap<int, int> intListMap;
     testMap(intListMap, 1, 2, 3, 4);
     
-    test::section("HashMap<int, int>");
-    HashMap<int, int> intHashMap(&intHasher);
-    testMap(intHashMap, 1, 2, 3, 4);
-    
     test::section("ListMap<string, float>");
     ListMap<string, float> strFloatListMap;
     testMap(strFloatListMap, str1, str2, 1.0f, 2.0f);
+    
+    test::section("HashMap<int, int>");
+    HashMap<int, int> intHashMap(&intHasher);
+    testMap(intHashMap, 1, 2, 3, 4);
     
     test::section("HashMap<string, float>");
     HashMap<string, float> strFloatHashMap(&stringHasher);
@@ -75,7 +75,7 @@ template <typename T>
 void testIterable(AbstractIterable<T>& iterable)
 {
     AbstractIterator<T>* iterator = iterable.createIterator();
-    test::result(iterator != NULL, "iteratble creates a non-NULL interator");
+    test::result(iterator != NULL, "iterable creates a non-NULL iterator");
     test::result(iterator->moveNext() == false, "empty iterator can't moveNext");
     delete iterator;
 }
@@ -84,7 +84,7 @@ template <typename T>
 void testIterable(AbstractIterable<T>& iterable, const T& item1, const T& item2)
 {
     AbstractIterator<T>* iterator = iterable.createIterator();
-    test::result(iterator != NULL, "iteratble creates a non-NULL interator");
+    test::result(iterator != NULL, "iterable creates a non-NULL iterator");
     test::result(iterator->moveNext() == true, "iterator can moveNext");
     const T& val1 = iterator->getValue();
     test::result(iterator->moveNext() == true, "iterator can moveNext again");
@@ -125,6 +125,7 @@ void testMap(AbstractMap<K, V>& map, const K& key1, const K& key2, const V& valu
 {
     V getResult;
     
+    testIterable(map);
     test::result(map.get(key1, &getResult) == false, "map shouldn't contain key1");
     test::result(map.get(key2, &getResult) == false, "map shouldn't contain key2");
     
@@ -134,6 +135,7 @@ void testMap(AbstractMap<K, V>& map, const K& key1, const K& key2, const V& valu
     test::result(map.get(key2, &getResult) == false, "map shouldn't contain key2");
     
     map.set(key2, value2);
+    testIterable(map, KeyValue<K, V>(key1, value1), KeyValue<K, V>(key2, value2));
     test::result(map.get(key1, &getResult) == true, "map should contain key1");
     test::result(getResult == value1, "map should have value1 for key1");
     test::result(map.get(key2, &getResult) == true, "map should contain key2");
