@@ -4,18 +4,18 @@
 #include "abstractmap.h"
 
 template < typename K, typename V >
-class ListMapNode
+class ListMapNode : public KeyValue<K, V>
 {
 public:
-    const K key;
-    V value;
     ListMapNode<K, V>* next;
     
-    ListMapNode(const K& k, const V& v) : key(k), value(v) {};
+    ListMapNode(const K& k, const V& v) : KeyValue<K, V>(k, v) {};
 };
 
+template < typename K, typename V > class ListMapIterator;
+
 template < typename K, typename V >
-class ListMap: public AbstractMap<K, V> {
+class ListMap : public AbstractMap<K, V> {
 private:
     ListMapNode<K, V>* _first;
 
@@ -51,7 +51,7 @@ public:
         return false;
     }
     
-    void set(const K& key, const V& value)
+    bool set(const K& key, const V& value)
     {
         ListMapNode<K, V>* node = _first;
         while (node != NULL && node->key != key)
@@ -60,19 +60,19 @@ public:
         }
         if (node != NULL)
         {
-            // overwrite
             node->value = value;
+            return true;
         }
         else
         {
-            // insert at front
             node = new ListMapNode<K, V>(key, value);
             node->next = _first;
             _first = node;
+            return false;
         }
     }
     
-    void remove(const K& key)
+    bool remove(const K& key)
     {
         ListMapNode<K, V>* node = _first;
         ListMapNode<K, V>* prev = NULL;
@@ -92,7 +92,45 @@ public:
                 _first = node->next;
             }
             delete node;
+            return true;
         }
+        return false;
+    }
+    
+    AbstractIterator<KeyValue<K, V> >* createIterator() const
+    {
+        return new ListMapIterator<K, V>(_first);
+    }
+};
+
+
+template < typename K, typename V >
+class ListMapIterator : public AbstractIterator<KeyValue<K, V> >
+{
+private:
+    bool _started;
+    ListMapNode<K, V>* _node;
+
+public:
+    ListMapIterator(ListMapNode<K, V>* node) : _started(false), _node(node) {}
+    
+    bool moveNext()
+    {
+        if (!_started)
+        {
+            _started = true;
+        }
+        else
+        {
+            _node = _node->next;
+        }
+        
+        return _node != NULL;
+    }
+    
+    const KeyValue<K, V>& getValue() const
+    {
+        return *_node;
     }
 };
 
