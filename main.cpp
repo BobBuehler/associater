@@ -3,6 +3,7 @@
 #include "abstractmap.h"
 #include "abstractset.h"
 #include "hashmap.hpp"
+#include "hashset.hpp"
 #include "listmap.hpp"
 #include "listset.hpp"
 #include "test.h"
@@ -45,12 +46,20 @@ int main()
     StringHasher stringHasher;
     
     test::section("ListSet<int>");
-    ListSet<int> intSet;
-    testSet(intSet, 1, 5);
+    ListSet<int> intListSet;
+    testSet(intListSet, 1, 5);
     
     test::section("ListSet<string>");
-    ListSet<string> stringSet;
-    testSet(stringSet, str1, str2);
+    ListSet<string> stringListSet;
+    testSet(stringListSet, str1, str2);
+    
+    test::section("HashSet<int>");
+    HashSet<int> intHashSet(&intHasher);
+    testSet(intHashSet, 1, 5);
+    
+    test::section("HashSet<string>");
+    HashSet<string> stringHashSet(&stringHasher);
+    testSet(stringHashSet, str1, str2);
     
     test::section("ListMap<int, int>");
     ListMap<int, int> intListMap;
