@@ -3,31 +3,33 @@
 
 #include "abstractmap.h"
 
-template < typename K, typename V >
+template <typename K, typename V>
 class ListMapNode : public KeyValue<K, V>
 {
 public:
-    ListMapNode<K, V>* next;
-    
-    ListMapNode(const K& k, const V& v) : KeyValue<K, V>(k, v) {};
+    ListMapNode<K, V> *next;
+
+    ListMapNode(const K &k, const V &v) : KeyValue<K, V>(k, v){};
 };
 
-template < typename K, typename V > class ListMapIterator;
+template <typename K, typename V>
+class ListMapIterator;
 
-template < typename K, typename V >
-class ListMap : public AbstractMap<K, V> {
+template <typename K, typename V>
+class ListMap : public AbstractMap<K, V>
+{
 private:
-    ListMapNode<K, V>* _first;
+    ListMapNode<K, V> *_first;
 
 public:
     ListMap()
     {
         _first = NULL;
     };
-    
+
     ~ListMap()
     {
-        ListMapNode<K, V>* next;
+        ListMapNode<K, V> *next;
         while (_first != NULL)
         {
             next = _first->next;
@@ -35,10 +37,10 @@ public:
             _first = next;
         }
     }
-    
-    bool get(const K& key, V* value) const
+
+    bool get(const K &key, V *value) const
     {
-        ListMapNode<K, V>* node = _first;
+        ListMapNode<K, V> *node = _first;
         while (node != NULL && node->key != key)
         {
             node = node->next;
@@ -50,10 +52,10 @@ public:
         }
         return false;
     }
-    
-    bool set(const K& key, const V& value)
+
+    bool set(const K &key, const V &value)
     {
-        ListMapNode<K, V>* node = _first;
+        ListMapNode<K, V> *node = _first;
         while (node != NULL && node->key != key)
         {
             node = node->next;
@@ -71,11 +73,11 @@ public:
             return false;
         }
     }
-    
-    bool remove(const K& key)
+
+    bool remove(const K &key)
     {
-        ListMapNode<K, V>* node = _first;
-        ListMapNode<K, V>* prev = NULL;
+        ListMapNode<K, V> *node = _first;
+        ListMapNode<K, V> *prev = NULL;
         while (node != NULL && node->key != key)
         {
             prev = node;
@@ -96,24 +98,23 @@ public:
         }
         return false;
     }
-    
-    AbstractIterator<KeyValue<K, V> >* createIterator() const
+
+    AbstractIterator<KeyValue<K, V>> *createIterator() const
     {
         return new ListMapIterator<K, V>(_first);
     }
 };
 
-
-template < typename K, typename V >
-class ListMapIterator : public AbstractIterator<KeyValue<K, V> >
+template <typename K, typename V>
+class ListMapIterator : public AbstractIterator<KeyValue<K, V>>
 {
 private:
     bool _started;
-    ListMapNode<K, V>* _node;
+    ListMapNode<K, V> *_node;
 
 public:
-    ListMapIterator(ListMapNode<K, V>* node) : _started(false), _node(node) {}
-    
+    ListMapIterator(ListMapNode<K, V> *node) : _started(false), _node(node) {}
+
     bool moveNext()
     {
         if (!_started)
@@ -124,11 +125,11 @@ public:
         {
             _node = _node->next;
         }
-        
+
         return _node != NULL;
     }
-    
-    const KeyValue<K, V>& getValue() const
+
+    const KeyValue<K, V> &getValue() const
     {
         return *_node;
     }
